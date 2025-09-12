@@ -1,59 +1,104 @@
-// mis variables son
-let cantidadDePersonas = 60;
-let impuestos = 10000;
-let comida = 7000;
-// mis constantes fijas
-const costo_por_persona = 15000;
-// uso el array para servicios disponibles y su precio
-const servicios_disponibles = [
-  { nombre: "animacion", precio: 50000 },
-  { nombre: "bebidas", precio: 15000 },
-  { nombre: "maquillaje", precio: 30000 },
-  { nombre: "fotos", precio: 10000 },
-];
+// Esperar a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', () => {
 
-// indico los servicios seleccionados y son todos:
-let serviciosSeleccionados = ["bebidas", "fotos", "animacion", "maquillaje"];
+    // 1. Obtener referencias a los elementos del DOM
+    const ninosInput = document.getElementById('ninos');
+    const adultosInput = document.getElementById('adultos');
+    const productoSelect = document.getElementById('producto-select');
+    const agregarBtn = document.getElementById('agregar-btn');
+    const listaProductosUl = document.getElementById('lista-productos');
+    const totalPresupuestoSpan = document.getElementById('total-presupuesto');
+    const guardarBtn = document.getElementById('guardar-btn');
+    const cargarBtn = document.getElementById('cargar-btn');
 
-function calcularCostoTotal(cantidadDePersonas, costo_por_persona, impuestos, servicios_disponibles) {
-  let costoBase = cantidadDePersonas * costo_por_persona + impuestos;
-  let costoComida = comida * cantidadDePersonas;
-  let costoServicios = 0;
+    // Array para almacenar los productos del presupuesto
+    let productosPresupuesto = [];
+    
+    // Función para actualizar la interfaz de usuario
+    const actualizarUI = () => {
+        listaProductosUl.innerHTML = ''; // Limpiar la lista
+        let total = 0;
 
+        // Recorrer el array para renderizar la lista y calcular el total
+        productosPresupuesto.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = `${item.nombre} - $${item.precio}`;
+            listaProductosUl.appendChild(li);
+            total += item.precio;
+        });
 
-//Entiendo que un  bucle for se compone de tres partes principales, separadas por punto y coma ;:
-//la Inicialización: let i = 0, Aquí es donde se declara y 
-// se le asigna un valor inicial a la variable que se usará como contador
-// la Condición: i < serviciosSeleccionados.length, Aquí es donde se evalúa si la condición es verdadera o falsa
-// o	 la Actualización: i++, Aquí es donde se actualiza el valor de la variable contador en cada iteración
+        // Actualizar el total en el DOM
+        totalPresupuestoSpan.textContent = total;
+    };
 
-// Calcular costo de servicios adicionales
-  for (let i = 0; i < serviciosSeleccionados.length; i++) {
-    let servicio = servicios_disponibles.find(s => s.nombre === serviciosSeleccionados[i]);
-    if (servicio) {
-      costoServicios += servicio.precio;
+    // 2. Manejar eventos
+    // Evento para agregar productos
+    agregarBtn.addEventListener('click', () => {
+        const productoNombre = productoSelect.value;
+        let precio = 0;
+
+        // Asignar precio basado en el producto seleccionado
+        switch (productoNombre) {
+            case 'Torta':
+                precio = 500;
+                break;
+            case 'Golosinas':
+                precio = 200;
+                break;
+            case 'Decoracion':
+                precio = 300;
+                break;
+            case 'Bebidas':
+                precio = 150;
+                break;
+        }
+
+        // Agregar el nuevo producto al array
+        productosPresupuesto.push({ nombre: productoNombre, precio: precio });
+        
+        // Actualizar la UI
+        actualizarUI();
+    });
+
+    // Evento para guardar el presupuesto en LocalStorage
+    guardarBtn.addEventListener('click', () => {
+        // Obtener los datos actuales del presupuesto
+        const dataToSave = {
+            ninos: ninosInput.value,
+            adultos: adultosInput.value,
+            productos: productosPresupuesto
+        };
+        // Convertir el objeto a una cadena JSON y guardarlo
+        localStorage.setItem('presupuestoCumple', JSON.stringify(dataToSave));
+        alert('¡Presupuesto guardado!');
+    });
+
+    // Evento para cargar el presupuesto desde LocalStorage
+    cargarBtn.addEventListener('click', () => {
+        // Obtener la cadena JSON del LocalStorage
+        const storedData = localStorage.getItem('presupuestoCumple');
+        
+        if (storedData) {
+            // Convertir la cadena JSON de vuelta a un objeto
+            const loadedData = JSON.parse(storedData);
+
+            // Cargar los datos en los elementos del DOM y el array
+            ninosInput.value = loadedData.ninos;
+            adultosInput.value = loadedData.adultos;
+            productosPresupuesto = loadedData.productos;
+
+            // Actualizar la interfaz de usuario con los datos cargados
+            actualizarUI();
+            alert('¡Presupuesto cargado!');
+        } else {
+            alert('No hay presupuesto guardado para cargar.');
+        }
+    });
+
+    // Cargar datos al iniciar si existen
+    const storedData = localStorage.getItem('presupuestoCumple');
+    if (storedData) {
+        productosPresupuesto = JSON.parse(storedData).productos;
+        actualizarUI();
     }
-  }
-
-  return costoBase + costoComida + costoServicios;
-}
-
-let total = calcularCostoTotal(cantidadDePersonas, costo_por_persona, impuestos, servicios_disponibles);
-console.log("El costo total es: " + total);
-
-/*
-if (acompanado === "si") {
-  alert("Puedes entrar.");
-} else {
-  alert("No puedes entrar.");
-}
-*/
-
-/*
-let total = 60;
-const precios = [250, 25000, 50000, 70000];
-for (let i = 0; i < precios.length; i++) {
-  total = total + precios[i];
-}
-console.log("El total es: " + total);
-*/
+});

@@ -3,16 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MI primer presupuesto para el cumple de mi hijo </title>
+    <title>Presupuesto Cumpleaños</title>
+    <style>
+        body { font-family: sans-serif; }
+        .container { max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="number"], select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #resultados { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 15px; }
+        ul { list-style: none; padding: 0; }
+        li { margin-bottom: 5px; }
+    </style>
 </head>
 <body>
-     <h1>
-        presupuesto cumpleaños niño de 6 años
-     </h1>
+    <div class="container">
+        <h1>Presupuesto Cumpleaños</h1>
+        <p>Necesito un presupuesto para el cumpleaños de mi hijo.</p>
 
-    <p>
-     Necesito un presupuesto para armar el cumple de mi hijo, con 30 niños y 30 adultos  
-    </p>
+        <form id="presupuesto-form">
+            <div class="form-group">
+                <label for="ninos">Número de niños:</label>
+                <input type="number" id="ninos" value="30" min="0">
+            </div>
+            <div class="form-group">
+                <label for="adultos">Número de adultos:</label>
+                <input type="number" id="adultos" value="30" min="0">
+            </div>
+            <div class="form-group">
+                <label for="producto-select">Agregar producto:</label>
+                <select id="producto-select">
+                    <option value="Torta">Torta ($500)</option>
+                    <option value="Golosinas">Golosinas ($200)</option>
+                    <option value="Decoracion">Decoración ($300)</option>
+                    <option value="Bebidas">Bebidas ($150)</option>
+                </select>
+            </div>
+            <button type="button" id="agregar-btn">Agregar a la lista</button>
+        </form>
+
+        <div id="resultados">
+            <h2>Lista de Productos</h2>
+            <ul id="lista-productos"></ul>
+            <h3>Total: $<span id="total-presupuesto">0</span></h3>
+            <button id="guardar-btn">Guardar Presupuesto</button>
+            <button id="cargar-btn">Cargar Presupuesto</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
